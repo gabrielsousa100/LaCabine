@@ -353,11 +353,6 @@ section.py-5 {
     content: none !important;
     display: none !important;
 }
-/* ==========================================================================
-   AJUSTE FINAL DO ARQUIVO CSS (style.css)
-   ========================================================================== */
-
-/* 1. Mantém a Navbar com tamanho controlado */
 .navbar {
     background: #790404 !important;
     padding: 10px 0 !important;
@@ -366,22 +361,16 @@ section.py-5 {
     display: flex;
     align-items: center;
 }
-
-/* 2. Empurra o topo de todas as páginas para não esmagar nada */
 body {
     padding-top: 70px !important;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
 }
-
-/* 3. Ajuste exclusivo para a seção "Sobre" */
 .secao-sobre {
     margin-top: 0 !important;
     padding-top: 40px !important;
 }
-
-/* 4. ATENÇÃO AQUI: Remove a linha vermelha APENAS na página Sobre */
 .secao-sobre h2::after {
     display: none !important;
     content: none !important;}
