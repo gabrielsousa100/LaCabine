@@ -60,7 +60,7 @@ if (imagensGaleria.length > 0) {
 // ======================================
 // MÁSCARA CELULAR / WHATSAPP NO FORMULÁRIO
 // ======================================
-const telInput = document.getElementById('telefone');
+const telInput = document.getElementById('campo-whatsapp');
 if (telInput) {
     telInput.addEventListener('input', function(e) {
         let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
@@ -71,7 +71,7 @@ if (telInput) {
 // ======================================
 // MÁSCARA CPF / CNPJ
 // ======================================
-const cpfCnpjInput = document.getElementById("cpfCnpj");
+const cpfCnpjInput = document.getElementById("campo-documento");
 
 if (cpfCnpjInput) {
     cpfCnpjInput.addEventListener("input", () => {
@@ -177,8 +177,7 @@ function validarCNPJ(cnpj) {
 // ======================================
 // CONSULTA VIA CEP
 // ======================================
-const cepInput = document.getElementById("cep");
-const cepMsg = document.getElementById("cepMsg");
+const cepInput = document.getElementById("campo-cep");
 
 if (cepInput) {
     cepInput.addEventListener("input", () => {
@@ -189,9 +188,11 @@ if (cepInput) {
 
     cepInput.addEventListener("blur", async () => {
         const cep = cepInput.value.replace(/\D/g, "");
+        const campoEndereco = document.getElementById("campo-endereco");
+        const divFeedback = cepInput.nextElementSibling; // Pega o .invalid-feedback
 
         if (cep.length !== 8) {
-            if(cepMsg) cepMsg.innerText = "CEP inválido";
+            cepInput.classList.add("is-invalid");
             return;
         }
 
@@ -200,19 +201,26 @@ if (cepInput) {
             const dados = await resposta.json();
 
             if (dados.erro) {
-                if(cepMsg) cepMsg.innerText = "CEP não encontrado";
+                cepInput.classList.add("is-invalid");
+                if (campoEndereco) campoEndereco.value = "";
                 return;
             }
 
-            if(cepMsg) cepMsg.innerText = "";
-
-            document.getElementById("rua").value = dados.logradouro || "";
-            document.getElementById("bairro").value = dados.bairro || "";
-            document.getElementById("cidade").value = dados.localidade || "";
-            document.getElementById("estado").value = dados.uf || "";
+            cepInput.classList.remove("is-invalid");
+            
+            // Como no novo HTML o endereço é um campo só, concatenamos as informações de forma limpa
+            if (campoEndereco) {
+                let enderecoCompleto = "";
+                if (dados.logradouro) enderecoCompleto += `${dados.logradouro}, `;
+                if (dados.bairro) enderecoCompleto += `${dados.bairro}, `;
+                if (dados.localidade) enderecoCompleto += `${dados.localidade}`;
+                if (dados.uf) enderecoCompleto += ` - ${dados.uf}`;
+                
+                campoEndereco.value = enderecoCompleto;
+            }
 
         } catch {
-            if(cepMsg) cepMsg.innerText = "Erro ao consultar CEP";
+            cepInput.classList.add("is-invalid");
         }
     });
 }
@@ -220,48 +228,78 @@ if (cepInput) {
 // ======================================
 // FORMULÁRIO -> ENVIO DA MENSAGEM WHATSAPP
 // ======================================
-const formulario = document.querySelector("form");
+const formulario = document.getElementById("form-orcamento");
 
 if (formulario) {
     formulario.addEventListener("submit", (e) => {
         e.preventDefault();
 
-        const documento = document.getElementById("cpfCnpj").value;
-        const numeros = documento.replace(/\D/g, "");
-
+        // 1. Validação de CPF/CNPJ
+        const documento = document.getElementById("campo-documento").value;
+        const numerosDocumento = documento.replace(/\D/g, "");
         let documentoValido = false;
 
-        if (numeros.length === 11)
-            documentoValido = validarCPF(numeros);
+        if (numerosDocumento.length === 11) {
+            documentoValido = validarCPF(numerosDocumento);
+        } else if (numerosDocumento.length === 14) {
+            documentoValido = validarCNPJ(numerosDocumento);
+        }
 
-        if (numeros.length === 14)
-            documentoValido = validarCNPJ(numeros);
-
+        const inputDoc = document.getElementById("campo-documento");
         if (!documentoValido) {
+            inputDoc.classList.add("is-invalid");
             alert("Por favor, insira um CPF ou CNPJ válido.");
+            return;
+        } else {
+            inputDoc.classList.remove("is-invalid");
+        }
+
+        // 2. Validação de Checkboxes (Atrações)
+        const checkboxesMarcados = document.querySelectorAll(".atracao-check:checked");
+        const erroAtracoes = document.getElementById("erro-atracoes");
+
+        if (checkboxesMarcados.length === 0) {
+            if (erroAtracoes) erroAtracoes.classList.remove("d-none");
+            alert("Selecione pelo menos uma atração.");
+            return;
+        } else {
+            if (erroAtracoes) erroAtracoes.classList.add("d-none");
+        }
+
+        // Mapeia os valores selecionados para uma string limpa separada por vírgulas
+        const listaAtracoes = Array.from(checkboxesMarcados).map(cb => cb.value).join(", ");
+
+        // 3. Validação de Data Futura e Antecedência Mínima
+        const dataEvento = document.getElementById("campo-data").value;
+        const hoje = new Date();
+        hoje.setHours(0, 0, 0, 0);
+        const dataSelecionada = new Date(dataEvento);
+
+        if (dataSelecionada < hoje) {
+            alert("Selecione uma data futura.");
             return;
         }
 
-        const nome = document.getElementById("nome").value;
-        const email = document.getElementById("email").value;
-        const telefone = document.getElementById("telefone").value;
-        const dataEvento = document.getElementById("dataEvento").value;
-        const tipoEvento = document.getElementById("tipoEvento").value;
-        const convidados = document.getElementById("convidados").value;
-        const horasEvento = document.getElementById("horasEvento").value;
-        const qtdAtracoes = document.getElementById("qtdAtracoes").value;
-        const atracaoPrincipal = document.getElementById("atracaoPrincipal").value;
-        const localEvento = document.getElementById("localEvento").value;
+        const diferencaDias = (dataSelecionada - hoje) / (1000 * 60 * 60 * 24);
+        if (diferencaDias < 7) {
+            alert("Solicitações devem ser feitas com pelo menos 7 dias de antecedência.");
+            return;
+        }
 
-        const cep = document.getElementById("cep").value;
-        const rua = document.getElementById("rua").value;
-        const numero = document.getElementById("numero").value;
-        const bairro = document.getElementById("bairro").value;
-        const cidade = document.getElementById("cidade").value;
-        const estado = document.getElementById("estado").value;
+        // 4. Captura dos demais valores atualizados do HTML
+        const nome = document.getElementById("campo-nome").value;
+        const email = document.getElementById("campo-email").value;
+        const telefone = document.getElementById("campo-whatsapp").value;
+        const tipoEventoSelect = document.getElementById("campo-tipo-evento");
+        const tipoEvento = tipoEventoSelect.options[tipoEventoSelect.selectedIndex].text;
+        const duracaoSelect = document.getElementById("campo-duracao");
+        const horasEvento = duracaoSelect.options[duracaoSelect.selectedIndex].text;
+        const convidados = document.getElementById("campo-convidados").value;
+        const cep = document.getElementById("campo-cep").value;
+        const enderecoLocal = document.getElementById("campo-endereco").value;
+        const mensagemAdicional = document.getElementById("campo-mensagem").value;
 
-        const mensagem = document.getElementById("mensagem").value;
-
+        // 5. Formatação do Texto do WhatsApp
         const texto = `
 *SOLICITAÇÃO DE ORÇAMENTO - LACABINE*
 
@@ -270,29 +308,23 @@ if (formulario) {
 📱 Telefone: ${telefone}
 🪪 CPF/CNPJ: ${documento}
 
-📅 Data: ${dataEvento}
-🎉 Tipo: ${tipoEvento}
-👥 Convidados: ${convidados}
-⏱ Horas: ${horasEvento}
-🎭 Quantidade de atrações: ${qtdAtracoes}
-⭐ Atração principal: ${atracaoPrincipal}
+📅 Data do Evento: ${dataEvento.split('-').reverse().join('/')}
+🎉 Tipo de Evento: ${tipoEvento}
+👥 Qtd. Convidados: ${convidados}
+⏱ Duração Contratada: ${horasEvento}
+⭐ Atrações Escolhidas: ${listaAtracoes}
 
-📍 Local: ${localEvento}
-
-🏠 Endereço:
+📍 Local de Realização:
 CEP: ${cep}
-Rua: ${rua}
-Nº: ${numero}
-Bairro: ${bairro}
-Cidade: ${cidade}
-Estado: ${estado}
+Endereço: ${enderecoLocal}
 
-📝 Observações:
-${mensagem || 'Nenhuma'}
+📝 Observações / Detalhes:
+${mensagemAdicional || 'Nenhuma observação informada.'}
 `;
 
         const numeroWhatsApp = "5511959507336";
 
+        // 6. Disparo da janela externa
         window.open(
             `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(texto)}`,
             "_blank"
