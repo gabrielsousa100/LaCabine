@@ -36,157 +36,218 @@
     <!-- SEÇÃO DA GALERIA -->
     <section class="py-5">
         <div class="container">
-            <div class="text-center mb-5">
+            <div class="text-center mb-4">
                 <h2 class="fw-bold">Nossa Galeria</h2>
                 <p class="text-muted">Explore os registros reais das experiências exclusivas levadas aos eventos.</p>
             </div>
-
+    
+            <!-- BOTÕES DE FILTRO DINÂMICO -->
+            <div class="d-flex flex-wrap justify-content-center gap-2 mb-5" id="filtros-galeria">
+                <button class="btn btn-outline-dark btn-sm px-4 py-2 active" data-filtro="todos">Todos</button>
+                <button class="btn btn-outline-dark btn-sm px-4 py-2" data-filtro="cabines">Cabines & Espelhos</button>
+                <button class="btn btn-outline-dark btn-sm px-4 py-2" data-filtro="plataformas">Plataformas 360</button>
+                <button class="btn btn-outline-dark btn-sm px-4 py-2" data-filtro="pistas">Pistas de LED</button>
+                <button class="btn btn-outline-dark btn-sm px-4 py-2" data-filtro="institucional">Serviços &
+                    Equipamentos</button>
+            </div>
+    
             <!-- GRID PRINCIPAL DE IMAGENS -->
             <div class="row g-4" id="galeria-grid">
-
+    
                 <div class="col-md-4 galeria-card" data-categoria="plataformas">
-                    <div class="position-relative overflow-hidden rounded shadow-sm">
-                        <img src="./img/360.jpg" alt="Plataforma 360 Graus em Evento Premium" class="img-fluid w-100"
-                            style="object-fit: cover; height: 280px; cursor: pointer;">
+                    <div class="position-relative overflow-hidden rounded shadow-sm galeria-item">
+                        <img src="./img/360.jpg" alt="Plataforma 360 Graus em Evento Premium" class="img-fluid w-100">
+                        <div class="galeria-overlay">
+                            <span class="galeria-texto"><i class="bi bi-search me-2"></i>Plataforma 360 Graus</span>
+                        </div>
                     </div>
                 </div>
-
+    
                 <div class="col-md-4 galeria-card" data-categoria="cabines">
-                    <div class="position-relative overflow-hidden rounded shadow-sm">
-                        <img src="./img/cabine.jpg" alt="Cabine Fotográfica de Luxo em Casamento"
-                            class="img-fluid w-100" style="object-fit: cover; height: 280px; cursor: pointer;">
+                    <div class="position-relative overflow-hidden rounded shadow-sm galeria-item">
+                        <img src="./img/cabine.jpg" alt="Cabine Fotográfica de Luxo em Casamento" class="img-fluid w-100">
+                        <div class="galeria-overlay">
+                            <span class="galeria-texto"><i class="bi bi-search me-2"></i>Cabine Fotográfica de Luxo</span>
+                        </div>
                     </div>
                 </div>
-
+    
                 <div class="col-md-4 galeria-card" data-categoria="cabines">
-                    <div class="position-relative overflow-hidden rounded shadow-sm">
-                        <img src="./img/espelho.jpg" alt="Espelho Mágico Interativo Touchscreen" class="img-fluid w-100"
-                            style="object-fit: cover; height: 280px; cursor: pointer;">
+                    <div class="position-relative overflow-hidden rounded shadow-sm galeria-item">
+                        <img src="./img/espelho.jpg" alt="Espelho Mágico Interativo Touchscreen" class="img-fluid w-100">
+                        <div class="galeria-overlay">
+                            <span class="galeria-texto"><i class="bi bi-search me-2"></i>Espelho Mágico Interativo</span>
+                        </div>
                     </div>
                 </div>
-
+    
                 <div class="col-md-4 galeria-card" data-categoria="cabines">
-                    <div class="position-relative overflow-hidden rounded shadow-sm">
-                        <img src="./img/totem.jpg" alt="Totem Fotográfico Retrô em Madeira" class="img-fluid w-100"
-                            style="object-fit: cover; height: 280px; cursor: pointer;">
+                    <div class="position-relative overflow-hidden rounded shadow-sm galeria-item">
+                        <img src="./img/totem.jpg" alt="Totem Fotográfico Retrô em Madeira" class="img-fluid w-100">
+                        <div class="galeria-overlay">
+                            <span class="galeria-texto"><i class="bi bi-search me-2"></i>Totem Fotográfico Retrô</span>
+                        </div>
                     </div>
                 </div>
-
+    
                 <div class="col-md-4 galeria-card" data-categoria="plataformas">
-                    <div class="position-relative overflow-hidden rounded shadow-sm">
+                    <div class="position-relative overflow-hidden rounded shadow-sm galeria-item">
                         <img src="./img/Plataforma 360 personalizada.png"
-                            alt="Plataforma 360 com Identidade Visual Customizada" class="img-fluid w-100"
-                            style="object-fit: cover; height: 280px; cursor: pointer;">
+                            alt="Plataforma 360 com Identidade Visual Customizada" class="img-fluid w-100">
+                        <div class="galeria-overlay">
+                            <span class="galeria-texto"><i class="bi bi-search me-2"></i>Plataforma 360 Personalizada</span>
+                        </div>
                     </div>
                 </div>
-
+    
                 <div class="col-md-4 galeria-card" data-categoria="plataformas">
-                    <div class="position-relative overflow-hidden rounded shadow-sm">
+                    <div class="position-relative overflow-hidden rounded shadow-sm galeria-item">
                         <img src="./img/plataforma360.png" alt="Plataforma 360 Filmagens em Alta Resolução"
-                            class="img-fluid w-100" style="object-fit: cover; height: 280px; cursor: pointer;">
+                            class="img-fluid w-100">
+                        <div class="galeria-overlay">
+                            <span class="galeria-texto"><i class="bi bi-search me-2"></i>Filmagens em Alta Resolução</span>
+                        </div>
                     </div>
                 </div>
-
+    
                 <div class="col-md-4 galeria-card" data-categoria="cabines">
-                    <div class="position-relative overflow-hidden rounded shadow-sm">
+                    <div class="position-relative overflow-hidden rounded shadow-sm galeria-item">
                         <img src="./img/totemretro.png" alt="Totem Retrô Vintage para Eventos Sociais"
-                            class="img-fluid w-100" style="object-fit: cover; height: 280px; cursor: pointer;">
+                            class="img-fluid w-100">
+                        <div class="galeria-overlay">
+                            <span class="galeria-texto"><i class="bi bi-search me-2"></i>Totem Retrô Vintage</span>
+                        </div>
                     </div>
                 </div>
-
+    
                 <div class="col-md-4 galeria-card" data-categoria="institucional">
-                    <div class="position-relative overflow-hidden rounded shadow-sm">
+                    <div class="position-relative overflow-hidden rounded shadow-sm galeria-item">
                         <img src="./img/camera.png" alt="Equipamentos de Fotografia Profissional LaCabine"
-                            class="img-fluid w-100" style="object-fit: cover; height: 280px; cursor: pointer;">
+                            class="img-fluid w-100">
+                        <div class="galeria-overlay">
+                            <span class="galeria-texto"><i class="bi bi-search me-2"></i>Equipamentos Profissionais</span>
+                        </div>
                     </div>
                 </div>
-
+    
                 <div class="col-md-4 galeria-card" data-categoria="cabines">
-                    <div class="position-relative overflow-hidden rounded shadow-sm">
-                        <img src="./img/cabinetekbond.png"
-                            alt="Cabine Corporativa Customizada para Atendimento de Marcas" class="img-fluid w-100"
-                            style="object-fit: cover; height: 280px; cursor: pointer;">
+                    <div class="position-relative overflow-hidden rounded shadow-sm galeria-item">
+                        <img src="./img/cabinetekbond.png" alt="Cabine Corporativa Customizada para Atendimento de Marcas"
+                            class="img-fluid w-100">
+                        <div class="galeria-overlay">
+                            <span class="galeria-texto"><i class="bi bi-search me-2"></i>Cabine Corporativa
+                                Customizada</span>
+                        </div>
                     </div>
                 </div>
-
+    
                 <div class="col-md-4 galeria-card" data-categoria="cabines">
-                    <div class="position-relative overflow-hidden rounded shadow-sm">
+                    <div class="position-relative overflow-hidden rounded shadow-sm galeria-item">
                         <img src="./img/cabinecriança.png" alt="Cabine de Fotos Temática para Festas Infantis"
-                            class="img-fluid w-100" style="object-fit: cover; height: 280px; cursor: pointer;">
+                            class="img-fluid w-100">
+                        <div class="galeria-overlay">
+                            <span class="galeria-texto"><i class="bi bi-search me-2"></i>Cabine Temática Infantil</span>
+                        </div>
                     </div>
                 </div>
-
+    
                 <div class="col-md-4 galeria-card" data-categoria="institucional">
-                    <div class="position-relative overflow-hidden rounded shadow-sm">
+                    <div class="position-relative overflow-hidden rounded shadow-sm galeria-item">
                         <img src="./img/imagens.png" alt="Impressões de Fotos e Lembranças Personalizadas"
-                            class="img-fluid w-100" style="object-fit: cover; height: 280px; cursor: pointer;">
+                            class="img-fluid w-100">
+                        <div class="galeria-overlay">
+                            <span class="galeria-texto"><i class="bi bi-search me-2"></i>Lembranças Personalizadas</span>
+                        </div>
                     </div>
                 </div>
-
+    
                 <div class="col-md-4 galeria-card" data-categoria="plataformas">
-                    <div class="position-relative overflow-hidden rounded shadow-sm">
+                    <div class="position-relative overflow-hidden rounded shadow-sm galeria-item">
                         <img src="./img/plataforma360-2.png" alt="Gravação de Vídeo 360 Graus em Festa"
-                            class="img-fluid w-100" style="object-fit: cover; height: 280px; cursor: pointer;">
+                            class="img-fluid w-100">
+                        <div class="galeria-overlay">
+                            <span class="galeria-texto"><i class="bi bi-search me-2"></i>Gravação de Vídeo 360°</span>
+                        </div>
                     </div>
                 </div>
-
+    
                 <div class="col-md-4 galeria-card" data-categoria="cabines">
-                    <div class="position-relative overflow-hidden rounded shadow-sm">
-                        <img src="./img/espelho.png" alt="Aparato do Espelho Mágico Interativo" class="img-fluid w-100"
-                            style="object-fit: cover; height: 280px; cursor: pointer;">
+                    <div class="position-relative overflow-hidden rounded shadow-sm galeria-item">
+                        <img src="./img/espelho.png" alt="Aparato do Espelho Mágico Interativo" class="img-fluid w-100">
+                        <div class="galeria-overlay">
+                            <span class="galeria-texto"><i class="bi bi-search me-2"></i>Espelho Mágico Premium</span>
+                        </div>
                     </div>
                 </div>
-
+    
                 <div class="col-md-4 galeria-card" data-categoria="cabines">
-                    <div class="position-relative overflow-hidden rounded shadow-sm">
+                    <div class="position-relative overflow-hidden rounded shadow-sm galeria-item">
                         <img src="./img/espelho2.png" alt="Interface Digital do Espelho Touchscreen"
-                            class="img-fluid w-100" style="object-fit: cover; height: 280px; cursor: pointer;">
+                            class="img-fluid w-100">
+                        <div class="galeria-overlay">
+                            <span class="galeria-texto"><i class="bi bi-search me-2"></i>Interface Digital Touch</span>
+                        </div>
                     </div>
                 </div>
-
+    
                 <div class="col-md-4 galeria-card" data-categoria="cabines">
-                    <div class="position-relative overflow-hidden rounded shadow-sm">
+                    <div class="position-relative overflow-hidden rounded shadow-sm galeria-item">
                         <img src="./img/espelho3.png" alt="Espelho Mágico Instalado em Recepção de Casamento"
-                            class="img-fluid w-100" style="object-fit: cover; height: 280px; cursor: pointer;">
+                            class="img-fluid w-100">
+                        <div class="galeria-overlay">
+                            <span class="galeria-texto"><i class="bi bi-search me-2"></i>Recepção de Casamento</span>
+                        </div>
                     </div>
                 </div>
-
+    
                 <div class="col-md-4 galeria-card" data-categoria="cabines">
-                    <div class="position-relative overflow-hidden rounded shadow-sm">
+                    <div class="position-relative overflow-hidden rounded shadow-sm galeria-item">
                         <img src="./img/cabineaniversario.png" alt="Cabine de Fotos em Evento de Aniversário"
-                            class="img-fluid w-100" style="object-fit: cover; height: 280px; cursor: pointer;">
+                            class="img-fluid w-100">
+                        <div class="galeria-overlay">
+                            <span class="galeria-texto"><i class="bi bi-search me-2"></i>Cabine em Aniversários</span>
+                        </div>
                     </div>
                 </div>
-
+    
                 <div class="col-md-4 galeria-card" data-categoria="institucional">
-                    <div class="position-relative overflow-hidden rounded shadow-sm">
-                        <img src="./img/fotos.png" alt="Mosaico de Fotos Reveladas na Hora" class="img-fluid w-100"
-                            style="object-fit: cover; height: 280px; cursor: pointer;">
+                    <div class="position-relative overflow-hidden rounded shadow-sm galeria-item">
+                        <img src="./img/fotos.png" alt="Mosaico de Fotos Reveladas na Hora" class="img-fluid w-100">
+                        <div class="galeria-overlay">
+                            <span class="galeria-texto"><i class="bi bi-search me-2"></i>Fotos Reveladas na Hora</span>
+                        </div>
                     </div>
                 </div>
-
+    
                 <div class="col-md-4 galeria-card" data-categoria="institucional">
-                    <div class="position-relative overflow-hidden rounded shadow-sm">
-                        <img src="./img/fotolembranca.png"
-                            alt="Lembrança Fotográfica Personalizada com Moldura da Marca" class="img-fluid w-100"
-                            style="object-fit: cover; height: 280px; cursor: pointer;">
+                    <div class="position-relative overflow-hidden rounded shadow-sm galeria-item">
+                        <img src="./img/fotolembranca.png" alt="Lembrança Fotográfica Personalizada com Moldura da Marca"
+                            class="img-fluid w-100">
+                        <div class="galeria-overlay">
+                            <span class="galeria-texto"><i class="bi bi-search me-2"></i>Molduras Customizadas</span>
+                        </div>
                     </div>
                 </div>
-
+    
                 <div class="col-md-4 galeria-card" data-categoria="pistas">
-                    <div class="position-relative overflow-hidden rounded shadow-sm">
-                        <img src="./img/pistaled.png" alt="Pista de LED de Alto Padrão em Evento"
-                            class="img-fluid w-100" style="object-fit: cover; height: 280px; cursor: pointer;">
+                    <div class="position-relative overflow-hidden rounded shadow-sm galeria-item">
+                        <img src="./img/pistaled.png" alt="Pista de LED de Alto Padrão em Evento" class="img-fluid w-100">
+                        <div class="galeria-overlay">
+                            <span class="galeria-texto"><i class="bi bi-search me-2"></i>Pistas de LED de Alto Padrão</span>
+                        </div>
                     </div>
                 </div>
-
+    
                 <div class="col-md-4 galeria-card" data-categoria="cabines">
-                    <div class="position-relative overflow-hidden rounded shadow-sm">
+                    <div class="position-relative overflow-hidden rounded shadow-sm galeria-item">
                         <img src="./img/totemslim.png" alt="Totem Fotográfico Slim Compacto Digital"
-                            class="img-fluid w-100" style="object-fit: cover; height: 280px; cursor: pointer;">
+                            class="img-fluid w-100">
+                        <div class="galeria-overlay">
+                            <span class="galeria-texto"><i class="bi bi-search me-2"></i>Totem Fotográfico Slim</span>
+                        </div>
                     </div>
                 </div>
-
+    
             </div>
         </div>
     </section>

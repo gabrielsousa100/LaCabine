@@ -25,33 +25,64 @@ botoes.forEach(botao => {
 });
 
 // ======================================
-// LIGHTBOX DA GALERIA
+// FILTROS DINÂMICOS DA GALERIA
 // ======================================
-const imagensGaleria = document.querySelectorAll(".img-fluid.rounded");
-if (imagensGaleria.length > 0) {
-    const overlay = document.createElement("div");
-    overlay.classList.add("lightbox-overlay");
-    overlay.innerHTML = `
-        <span class="lightbox-close">&times;</span>
-        <img class="lightbox-img" src="" alt="Imagem Ampliada">
-    `;
-    document.body.appendChild(overlay);
-    const lightboxImg = overlay.querySelector(".lightbox-img");
-    const lightboxClose = overlay.querySelector(".lightbox-close");
+const botoesFiltro = document.querySelectorAll("#filtros-galeria button");
+const cardsGaleria = document.querySelectorAll(".galeria-card");
 
-    imagensGaleria.forEach(img => {
-        img.style.cursor = "pointer";
-        img.addEventListener("click", () => {
-            lightboxImg.src = img.src;
-            overlay.classList.add("active");
+botoesFiltro.forEach(botao => {
+    botao.addEventListener("click", () => {
+        // Altera o estado do botão ativo visualmente
+        botoesFiltro.forEach(b => b.classList.remove("active"));
+        botao.classList.add("active");
+
+        const filtroSelecionado = botao.getAttribute("data-filtro");
+
+        cardsGaleria.forEach(card => {
+            const categoriaCard = card.getAttribute("data-categoria");
+
+            if (filtroSelecionado === "todos" || categoriaCard === filtroSelecionado) {
+                card.classList.remove("fade-out");
+            } else {
+                card.classList.add("fade-out");
+            }
         });
     });
-    lightboxClose.addEventListener("click", () => {
-        overlay.classList.remove("active");
+});
+
+// ======================================
+// LIGHTBOX DA GALERIA COM CAPTION (LEGENDA)
+// ======================================
+const itensGaleria = document.querySelectorAll(".galeria-item");
+const customLightbox = document.getElementById("custom-lightbox");
+const lightboxImg = document.getElementById("lightbox-img");
+const lightboxCaption = document.getElementById("lightbox-caption");
+const lightboxClose = document.querySelector(".lightbox-close");
+
+if (itensGaleria.length > 0 && customLightbox) {
+    itensGaleria.forEach(item => {
+        item.addEventListener("click", () => {
+            const imgInterna = item.querySelector("img");
+            if (imgInterna) {
+                lightboxImg.src = imgInterna.src;
+                // Alimenta o texto da legenda usando o atributo 'alt' completo da tag de imagem
+                lightboxCaption.innerText = imgInterna.getAttribute("alt") || "";
+                customLightbox.classList.add("active");
+            }
+        });
     });
-    overlay.addEventListener("click", (e) => {
-        if (e.target === overlay) {
-            overlay.classList.remove("active");
+
+    // Fecha ao clicar no botão 'X'
+    if (lightboxClose) {
+        lightboxClose.addEventListener("click", () => {
+            customLightbox.classList.remove("active");
+        });
+    }
+
+    // Fecha se o usuário clicar no fundo escuro vazio
+    customLightbox.addEventListener("click", (e) => {
+        if (e.target === customLightbox || e.target.classList.contains("text-center") || e.target.classList.contains("position-relative")) {
+            customLightbox.classList.remove("active");
         }
     });
 }

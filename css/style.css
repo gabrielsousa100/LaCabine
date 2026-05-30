@@ -344,30 +344,123 @@ section h2.fw-bold.mb-4::after {
 /* ==========================================================================
    6. SEÇÃO GALERIA
    ========================================================================== */
-#galeria {
-    background: #790404;
-}
-
-#galeria h2 {
-    color: #ffffff;
-}
-
-#galeria h2::after {
-    background: #ffffff;
-}
-
-#galeria img {
-    border-radius: 12px;
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+/* Estilização dos Itens da Galeria */
+.galeria-item {
     cursor: pointer;
+    position: relative;
+    background-color: #000;
 }
 
-#galeria img:hover {
-    transform: scale(1.04) translateY(-3px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+.galeria-item img {
+    object-fit: cover;
+    height: 280px;
+    transition: transform 0.4s ease;
 }
 
+/* Cortina Escura Inteligente (Hover Effect) */
+.galeria-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    padding: 15px;
+}
+
+.galeria-texto {
+    color: #fff;
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-align: center;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+}
+
+/* Comportamento de Foco ao Passar o Mouse */
+.galeria-item:hover img {
+    transform: scale(1.08);
+}
+
+.galeria-item:hover .galeria-overlay {
+    opacity: 1;
+}
+
+.galeria-item:hover .galeria-texto {
+    transform: translateY(0);
+}
+
+/* Transição Suave das Classes de Filtro */
+.galeria-card {
+    transition: all 0.4s ease;
+}
+
+.galeria-card.fade-out {
+    opacity: 0;
+    transform: scale(0.8);
+    position: absolute;
+    width: 0;
+    height: 0;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+/* Custom Lightbox Overlay Atualizado */
+.lightbox-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 20px;
+}
+
+.lightbox-overlay.active {
+    display: flex;
+}
+
+.lightbox-img {
+    max-width: 90vw;
+    max-height: 75vh;
+    border-radius: 4px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+#lightbox-caption {
+    color: #fff;
+    margin-top: 15px;
+    font-size: 1.1rem;
+    font-weight: 300;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 35px;
+    color: #fff;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.lightbox-close:hover {
+    color: #ff4d4d;
+}
 /* ==========================================================================
    7. SEÇÃO CONTATO & FORMULÁRIOS
    ========================================================================== */
