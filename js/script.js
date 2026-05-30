@@ -1,28 +1,112 @@
 // ======================================
-// BOTÕES DE SERVIÇOS (CARDS) -> WHATSAPP
+// CONTROLE DINÂMICO DOS MODAIS DE SERVIÇOS
 // ======================================
-const botoes = document.querySelectorAll(".btn-red-pill");
 
-botoes.forEach(botao => {
-    botao.addEventListener("click", (e) => {
-        if (e.target.closest('form')) return;
+// Banco de dados das especificações técnicas dos serviços
+const dadosServicos = {
+    cabine: {
+        titulo: "Cabine de Fotos Tradicional",
+        img: "./img/cabine.jpg",
+        desc: "A clássica Cabine de Fotos oferece um ambiente reservado e intimista. Os convidados entram, fecham a cortina e se soltam usando nossos adereços divertidos, gerando tirinhas de fotos impressas na hora com alta fidelidade.",
+        tecnico: "Estrutura modular de alumínio revestido (1,20m x 1,50m x 2,00m). Câmera DSLR Profissional, Iluminação LED difusa integrada, impressora térmica de alta velocidade (foto pronta em 12 segundos). Necessita de um ponto de energia dedicado de 110v ou 220v.",
+        ambiente: "Espaços cobertos e planos. Perfeita para casamentos, formaturas e aniversários tradicionais localizados próximos à pista de dança ou recepção de convidados."
+    },
+    espelho: {
+        titulo: "Espelho Retrô Interativo",
+        img: "./img/espelho.jpg",
+        desc: "Uma peça de decoração luxuosa que se transforma em uma estação interativa de fotos. O espelho touchscreen exibe animações gráficas guiando os convidados, permite assinaturas na tela e emite elogios dinâmicos antes de capturar o clique.",
+        tecnico: "Moldura de madeira trabalhada com espelho reflexivo de 55 polegadas touchscreen capacitivo. Iluminação de estúdio (Flash acoplado de alta potência) e câmera DSLR embutida. Impressões personalizadas instantâneas.",
+        ambiente: "Salões internos requintados, halls de entrada e eventos de gala. Exige superfície totalmente plana e proteção contra luz solar direta forte para não interferir nos sensores de toque."
+    },
+    totem: {
+        titulo: "Totem Retrô Vintage",
+        img: "./img/totem.jpg",
+        desc: "Criado para eventos que prezam pelo design e estética. Construído em madeira nobre, ele une o charme do mobiliário rústico/vintage com o que há de mais moderno em engenharia de imagem.",
+        tecnico: "Gabinete artesanal em madeira maciça selada. Tela interna de retorno, câmera DSLR profissional oculta no design, flash com difusor em formato de sombrinha clássica e saída de impressão limpa por trás.",
+        ambiente: "Casamentos ao ar livre (estilo Boho Chic, rústico ou no campo), aniversários temáticos e recepções integradas a decorações florais ou amadeiradas."
+    },
+    plataforma: {
+        titulo: "Plataforma 360 Graus",
+        img: "./img/360.jpg",
+        desc: "A sensação do momento em engajamento digital. Os convidados sobem na plataforma e um braço automatizado gira ao redor deles capturando um vídeo em alta resolução com efeitos de aceleração e câmera lenta (slow-motion).",
+        tecnico: "Base de aço reforçado com capacidade para até 4 pessoas simultaneamente (450kg max). Braço giratório motorizado com controle de velocidade, suporte estabilizador para smartphone/câmera, e anel de luz LED (Ring Light) de alto CRI.",
+        ambiente: "Áreas amplas de transição ou pistas de dança. Requer um espaço livre mínimo de raio de 3 metros ao redor da base para a operação segura do braço giratório. Pode ser usado em ambientes externos."
+    },
+    compacto: {
+        titulo: "Totem Compacto Slim",
+        img: "./img/totemslim.png",
+        desc: "Focado em eficiência, velocidade de atendimento e captação de dados. O Totem Slim ocupa pouquíssimo espaço físico e incentiva o compartilhamento imediato das marcas em redes sociais.",
+        tecnico: "Estrutura ultra fina em aço carbono branco, equipada com iPad Pro de última geração, iluminação circular Ring Light contínua e sistema de compartilhamento digital nativo via QR Code, Email e WhatsApp.",
+        ambiente: "Stands de feiras de negócios, convenções corporativas, inaurações de lojas e estabelecimentos com alta rotatividade de pessoas e metragem restrita."
+    },
+    pista: {
+        titulo: "Pistas de LED Paris e Galáxia",
+        img: "./img/pistaled.png",
+        desc: "Transforme a sua pista de dança no centro absoluto das atenções do evento. Nossas placas de LED trazem o efeito estrelado clássico (Paris) e grafismos espaciais profundos (Galáxia) que mudam conforme o ritmo.",
+        tecnico: "Placas modulares ultra-resistentes de vidro temperado que suportam alto impacto. Controladores digitais DMX sincronizados, fiação embutida segura e opções de montagem nos formatos versáteis de 4x4 metros ou 5x5 metros.",
+        ambiente: "Centro de salões de festas principais, palcos de shows ou logo à frente da mesa do DJ. Exige piso inferior nivelado e liso."
+    },
+    lembranca: {
+        titulo: "Estação Foto Lembrança",
+        img: "./img/fotolembranca.png",
+        desc: "Focada na praticidade para organizadores. Diferente das cabines temporizadas, a estação opera focada em produzir volumes exatos de lembranças físicas personalizadas para que nenhum convidado saia de mãos vazias.",
+        tecnico: "Operação assistida por fotógrafo ou técnico, câmera profissional externa, estação portátil de processamento gráfico com molduras institucionais personalizadas pré-configuradas e impressoras industriais dedicadas.",
+        ambiente: "Festas corporativas de final de ano, jantares de premiação, mini-weddings ou eventos onde a entrega da foto acontece diretamente na saída ou mesas dos convidados."
+    },
+    tunel: {
+        titulo: "Túnel LED Infinito",
+        img: "./img/tunelled.webp",
+        desc: "Uma imersão visual e futurista de tirar o fôlego. Os convidados entram em uma estrutura espelhada envolta em faixas de LED programadas, gerando reflexos infinitos tridimensionais que dão a impressão de flutuar no espaço.",
+        tecnico: "Estrutura de passagem com paredes feitas em espelhos de acrílico de alta segurança e fitas de LED Pixel endereçáveis (RGB digitais). Câmera interna de alta velocidade acoplada e software de renderização instantânea de clipes de vídeo.",
+        ambiente: "Eventos corporativos disruptivos, lançamentos de produtos tecnológicos, festas de música eletrônica ou baladas de formaturas de grande porte."
+    }
+};
 
+// Variavel global para armazenar o serviço que está aberto no modal atualmente
+let servicoSelecionadoNoModal = "";
+
+const modalServicoElemento = document.getElementById('modalServico');
+if (modalServicoElemento) {
+    modalServicoElemento.addEventListener('show.bs.modal', function (event) {
+        const botaoDisparador = event.relatedTarget;
+        const servicoChave = botaoDisparador.getAttribute('data-servico');
+        const dados = dadosServicos[servicoChave];
+
+        if (dados) {
+            // Guarda o título do serviço ativo para o redirecionamento posterior
+            servicoSelecionadoNoModal = dados.titulo;
+
+            document.getElementById('modalServicoTitle').textContent = dados.titulo;
+            document.getElementById('modalServicoImg').src = dados.img;
+            document.getElementById('modalServicoImg').alt = dados.titulo;
+            document.getElementById('modalServicoDesc').textContent = dados.desc;
+            document.getElementById('modalServicoTecnico').textContent = dados.tecnico;
+            document.getElementById('modalServicoAmbiente').textContent = dados.ambiente;
+        }
+    });
+}
+
+// ======================================
+// REDIRECIONAMENTO COM SERVIÇO PARA O WHATSAPP
+// ======================================
+const btnOrcamentoModal = document.querySelector('#modalServico .btn-red-pill');
+
+if (btnOrcamentoModal) {
+    btnOrcamentoModal.addEventListener('click', function(e) {
+        // Altera o comportamento do link padrão (contato.html) se quisermos mandar direto para o WhatsApp
         e.preventDefault();
-        const card = e.target.closest('.card');
-        let servico = "";
-        if (card) {
-            const titulo = card.querySelector('.card-title');
-            if (titulo) servico = titulo.innerText;
-        }
-        const numeroWhatsApp = "5511959507336"; 
+        
+        const numeroWhatsApp = "5511959507336";
         let mensagem = "Olá! Gostaria de mais informações sobre os serviços da LaCabine.";
-        if (servico) {
-            mensagem = `Olá! Gostaria de solicitar um orçamento para o serviço: *${servico}*.`;
+        
+        if (servicoSelecionadoNoModal) {
+            mensagem = `Olá! Vi os detalhes técnicos no site e gostaria de solicitar um orçamento para o serviço: *${servicoSelecionadoNoModal}*.`;
         }
+        
         const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensagem)}`;
         window.open(url, '_blank');
     });
-});
+}
 
 // ======================================
 // FILTROS DINÂMICOS DA GALERIA
@@ -30,25 +114,26 @@ botoes.forEach(botao => {
 const botoesFiltro = document.querySelectorAll("#filtros-galeria button");
 const cardsGaleria = document.querySelectorAll(".galeria-card");
 
-botoesFiltro.forEach(botao => {
-    botao.addEventListener("click", () => {
-        // Altera o estado do botão ativo visualmente
-        botoesFiltro.forEach(b => b.classList.remove("active"));
-        botao.classList.add("active");
+if (botoesFiltro.length > 0 && cardsGaleria.length > 0) {
+    botoesFiltro.forEach(botao => {
+        botao.addEventListener("click", () => {
+            botoesFiltro.forEach(b => b.classList.remove("active"));
+            botao.classList.add("active");
 
-        const filtroSelecionado = botao.getAttribute("data-filtro");
+            const filtroSelecionado = botao.getAttribute("data-filtro");
 
-        cardsGaleria.forEach(card => {
-            const categoriaCard = card.getAttribute("data-categoria");
+            cardsGaleria.forEach(card => {
+                const categoriaCard = card.getAttribute("data-categoria");
 
-            if (filtroSelecionado === "todos" || categoriaCard === filtroSelecionado) {
-                card.classList.remove("fade-out");
-            } else {
-                card.classList.add("fade-out");
-            }
+                if (filtroSelecionado === "todos" || categoriaCard === filtroSelecionado) {
+                    card.classList.remove("fade-out");
+                } else {
+                    card.classList.add("fade-out");
+                }
+            });
         });
     });
-});
+}
 
 // ======================================
 // LIGHTBOX DA GALERIA COM CAPTION (LEGENDA)
@@ -65,21 +150,18 @@ if (itensGaleria.length > 0 && customLightbox) {
             const imgInterna = item.querySelector("img");
             if (imgInterna) {
                 lightboxImg.src = imgInterna.src;
-                // Alimenta o texto da legenda usando o atributo 'alt' completo da tag de imagem
                 lightboxCaption.innerText = imgInterna.getAttribute("alt") || "";
                 customLightbox.classList.add("active");
             }
         });
     });
 
-    // Fecha ao clicar no botão 'X'
     if (lightboxClose) {
         lightboxClose.addEventListener("click", () => {
             customLightbox.classList.remove("active");
         });
     }
 
-    // Fecha se o usuário clicar no fundo escuro vazio
     customLightbox.addEventListener("click", (e) => {
         if (e.target === customLightbox || e.target.classList.contains("text-center") || e.target.classList.contains("position-relative")) {
             customLightbox.classList.remove("active");
@@ -107,7 +189,6 @@ if (documentoInput) {
     documentoInput.addEventListener("input", async (e) => {
         let valor = documentoInput.value.replace(/\D/g, "");
 
-        // Aplica a máscara visual em tempo de digitação
         if (valor.length <= 11) {
             valor = valor.replace(/(\d{3})(\d)/, "$1.$2");
             valor = valor.replace(/(\d{3})(\d)/, "$1.$2");
@@ -122,7 +203,6 @@ if (documentoInput) {
 
         const numerosLimpos = valor.replace(/\D/g, "");
 
-        // Validação Instantânea de CPF (Local)
         if (numerosLimpos.length === 11) {
             if (validarCPF(numerosLimpos)) {
                 documentoInput.classList.remove("is-invalid");
@@ -132,9 +212,7 @@ if (documentoInput) {
                 documentoInput.classList.add("is-invalid");
             }
         } 
-        // Validação + Consulta Instantânea de CNPJ (Via API)
         else if (numerosLimpos.length === 14) {
-            // Verifica primeiro se a estrutura matemática do CNPJ faz sentido
             if (!validarCNPJ(numerosLimpos)) {
                 documentoInput.classList.remove("is-valid");
                 documentoInput.classList.add("is-invalid");
@@ -142,7 +220,6 @@ if (documentoInput) {
             }
 
             try {
-                // Consulta a base da Receita Federal via BrasilAPI
                 const resposta = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${numerosLimpos}`);
                 
                 if (resposta.status === 200) {
@@ -150,13 +227,11 @@ if (documentoInput) {
                     documentoInput.classList.remove("is-invalid");
                     documentoInput.classList.add("is-valid");
 
-                    // Preenche o campo de nome automaticamente com a Razão Social da Empresa
                     const campoNome = document.getElementById("campo-nome");
                     if (campoNome && dadosEmpresa.razao_social) {
                         campoNome.value = dadosEmpresa.razao_social;
                     }
                 } else {
-                    // CNPJ matematicamente correto, mas inexistente/inválido na Receita
                     documentoInput.classList.remove("is-valid");
                     documentoInput.classList.add("is-invalid");
                 }
@@ -164,7 +239,6 @@ if (documentoInput) {
                 console.error("Erro ao consultar API de CNPJ:", erro);
             }
         } else {
-            // Se o usuário estiver no meio da digitação, limpa as classes de validação
             documentoInput.classList.remove("is-valid", "is-invalid");
         }
     });
@@ -271,7 +345,6 @@ if (formulario) {
     formulario.addEventListener("submit", (e) => {
         e.preventDefault();
 
-        // 1. Validação final de segurança do CPF/CNPJ
         const documento = document.getElementById("campo-documento").value;
         const numerosDocumento = documento.replace(/\D/g, "");
         let documentoValido = false;
@@ -289,7 +362,6 @@ if (formulario) {
             return;
         }
 
-        // 2. Validação das Atrações (Checkboxes)
         const checkboxesMarcados = document.querySelectorAll(".atracao-check:checked");
         const erroAtracoes = document.getElementById("erro-atracoes");
 
@@ -303,7 +375,6 @@ if (formulario) {
 
         const listaAtracoes = Array.from(checkboxesMarcados).map(cb => cb.value).join(", ");
 
-        // 3. Validação de Data Futura e Antecedência Mínima
         const dataEvento = document.getElementById("campo-data").value;
         const hoje = new Date();
         hoje.setHours(0, 0, 0, 0);
@@ -320,7 +391,6 @@ if (formulario) {
             return;
         }
 
-        // 4. Captura dos valores para o texto final
         const nome = document.getElementById("campo-nome").value;
         const email = document.getElementById("campo-email").value;
         const telefone = document.getElementById("campo-whatsapp").value;
@@ -333,7 +403,6 @@ if (formulario) {
         const enderecoLocal = document.getElementById("campo-endereco").value;
         const mensagemAdicional = document.getElementById("campo-mensagem").value;
 
-        // 5. Formatação do Texto do WhatsApp
         const texto = `
 *SOLICITAÇÃO DE ORÇAMENTO - LACABINE*
 

@@ -285,66 +285,89 @@ section h2.fw-bold.mb-4::after {
 }
 
 /* ==========================================================================
-   5. CARDS DE SERVIÇOS
+   PÁGINA DE SERVIÇOS - LACABINE
    ========================================================================== */
+
+/* Espaçamento superior para compensar a Navbar fixada no topo */
+#servicos {
+    margin-top: 56px;
+}
+
+/* Título principal da seção */
+.section-title {
+    color: #333333;
+}
+
+/* Customização dos Cards de Serviço */
 .card-servico {
-    border: none !important;
-    border-radius: 20px !important;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06) !important;
-    overflow: hidden;
-    background-color: #ffffff;
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    border: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+/* Efeito de elevação ao passar o mouse sobre o card */
 .card-servico:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 38px rgba(121, 4, 4, 0.18) !important;
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
 }
 
-.card-servico .card-img-top {
-    height: 230px;
-    object-fit: cover;
-    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.card-servico:hover .card-img-top {
-    transform: scale(1.04);
-    /* Zoom suave na imagem interna do card */
-}
-
+/* Mantém os títulos dos cards proporcionais */
 .card-servico .card-title {
-    color: #790404;
-    font-size: 1.35rem;
-    font-weight: 700;
+    font-size: 1.25rem;
 }
 
-.card-servico .card-text {
-    font-size: 0.95rem;
-    line-height: 1.5;
-    color: #555;
+/* Container de imagem para garantir proporção idêntica em todos os cards */
+.card-img-container {
+    height: 220px;
+    overflow: hidden;
+    border-top-left-radius: calc(0.375rem - 1px);
+    /* Mantém o arredondamento padrão do Bootstrap */
+    border-top-right-radius: calc(0.375rem - 1px);
 }
 
-.card-servico .btn-red-pill {
+/* Comportamento da imagem dentro do container (Corte inteligente) */
+.card-img-container img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.3s ease;
+}
+
+/* Efeito de zoom suave na imagem quando houver hover no card */
+.card-servico:hover .card-img-container img {
+    transform: scale(1.05);
+}
+
+/* Botão Red Pill - Identidade Visual da Marca */
+.btn-red-pill {
     background-color: #790404;
     color: #ffffff;
+    border-radius: 50px;
     border: none;
-    border-radius: 50px !important;
-    padding: 10px 20px;
-    font-weight: 600;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
-.card-servico .btn-red-pill:hover {
-    background-color: #520202;
+.btn-red-pill:hover,
+.btn-red-pill:focus {
+    background-color: #9c0b0b;
     color: #ffffff;
-    transform: scale(1.03);
+    transform: translateY(-2px);
+}
+
+/* Estilização da imagem de visualização dentro do Modal */
+.modal-preview-img {
+    max-height: 280px;
+    object-fit: cover;
+}
+
+/* Rodapé institucional */
+.footer-lacabine {
+    background-color: #790404;
 }
 
 /* ==========================================================================
    6. SEÇÃO GALERIA
    ========================================================================== */
-/* Estilização dos Itens da Galeria */
+
 .galeria-item {
     cursor: pointer;
     position: relative;
@@ -397,7 +420,7 @@ section h2.fw-bold.mb-4::after {
 
 /* Transição Suave das Classes de Filtro */
 .galeria-card {
-    transition: all 0.4s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .galeria-card.fade-out {
@@ -461,10 +484,50 @@ section h2.fw-bold.mb-4::after {
 .lightbox-close:hover {
     color: #ff4d4d;
 }
+
+/* Estilização da Seção de Depoimentos */
+.feedback-card {
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    min-height: 240px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Customização do ícone de aspas gigantes */
+.feedback-card .bi-quote {
+    font-size: 6rem;
+    color: #dc3545;
+    /* Cor vermelha para combinar com a identidade "LaCabine" */
+    opacity: 0.08;
+    z-index: 0;
+}
+
+.feedback-card p {
+    position: relative;
+    z-index: 1;
+    font-style: italic;
+}
+
+/* Ajuste das setinhas laterais do carrossel para não sumirem no fundo claro */
+.carousel-control-prev,
+.carousel-control-next {
+    width: 5%;
+}
+
+.carousel-indicators [data-bs-target] {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-left: 6px;
+    margin-right: 6px;
+}
+
 /* ==========================================================================
    7. SEÇÃO CONTATO & FORMULÁRIOS
    ========================================================================== */
-.contato-box {
+
+   .contato-box {
     border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
