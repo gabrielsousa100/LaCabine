@@ -1,7 +1,13 @@
+// ======================================
+// BOTÕES DE SERVIÇOS (CARDS) -> WHATSAPP
+// ======================================
 const botoes = document.querySelectorAll(".btn-red-pill");
 
 botoes.forEach(botao => {
     botao.addEventListener("click", (e) => {
+        // Aplica o comportamento apenas se o botão NÃO for o do formulário principal
+        if (e.target.closest('form')) return;
+
         e.preventDefault();
         const card = e.target.closest('.card');
         let servico = "";
@@ -18,6 +24,10 @@ botoes.forEach(botao => {
         window.open(url, '_blank');
     });
 });
+
+// ======================================
+// LIGHTBOX DA GALERIA
+// ======================================
 const imagensGaleria = document.querySelectorAll(".img-fluid.rounded");
 if (imagensGaleria.length > 0) {
     const overlay = document.createElement("div");
@@ -47,11 +57,20 @@ if (imagensGaleria.length > 0) {
     });
 }
 
+// ======================================
+// MÁSCARA CELULAR / WHATSAPP NO FORMULÁRIO
+// ======================================
+const telInput = document.getElementById('telefone');
+if (telInput) {
+    telInput.addEventListener('input', function(e) {
+        let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+        e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+    });
+}
 
 // ======================================
 // MÁSCARA CPF / CNPJ
 // ======================================
-
 const cpfCnpjInput = document.getElementById("cpfCnpj");
 
 if (cpfCnpjInput) {
@@ -74,9 +93,8 @@ if (cpfCnpjInput) {
 }
 
 // ======================================
-// VALIDAR CPF
+// FUNÇÃO VALIDAR CPF
 // ======================================
-
 function validarCPF(cpf) {
     cpf = cpf.replace(/\D/g, '');
 
@@ -110,11 +128,9 @@ function validarCPF(cpf) {
 }
 
 // ======================================
-// VALIDAR CNPJ
+// FUNÇÃO VALIDAR CNPJ
 // ======================================
-
 function validarCNPJ(cnpj) {
-
     cnpj = cnpj.replace(/\D/g, '');
 
     if (cnpj.length !== 14)
@@ -159,64 +175,55 @@ function validarCNPJ(cnpj) {
 }
 
 // ======================================
-// CEP
+// CONSULTA VIA CEP
 // ======================================
-
 const cepInput = document.getElementById("cep");
+const cepMsg = document.getElementById("cepMsg");
 
 if (cepInput) {
-
     cepInput.addEventListener("input", () => {
-
         let cep = cepInput.value.replace(/\D/g, "");
-
         cep = cep.replace(/^(\d{5})(\d)/, "$1-$2");
-
         cepInput.value = cep;
     });
 
     cepInput.addEventListener("blur", async () => {
-
         const cep = cepInput.value.replace(/\D/g, "");
 
         if (cep.length !== 8) {
-            document.getElementById("cepMsg").innerText = "CEP inválido";
+            if(cepMsg) cepMsg.innerText = "CEP inválido";
             return;
         }
 
         try {
-
             const resposta = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
             const dados = await resposta.json();
 
             if (dados.erro) {
-                document.getElementById("cepMsg").innerText = "CEP não encontrado";
+                if(cepMsg) cepMsg.innerText = "CEP não encontrado";
                 return;
             }
 
-            document.getElementById("cepMsg").innerText = "";
+            if(cepMsg) cepMsg.innerText = "";
 
-            document.getElementById("rua").value = dados.logradouro;
-            document.getElementById("bairro").value = dados.bairro;
-            document.getElementById("cidade").value = dados.localidade;
-            document.getElementById("estado").value = dados.uf;
+            document.getElementById("rua").value = dados.logradouro || "";
+            document.getElementById("bairro").value = dados.bairro || "";
+            document.getElementById("cidade").value = dados.localidade || "";
+            document.getElementById("estado").value = dados.uf || "";
 
         } catch {
-            document.getElementById("cepMsg").innerText = "Erro ao consultar CEP";
+            if(cepMsg) cepMsg.innerText = "Erro ao consultar CEP";
         }
     });
 }
 
 // ======================================
-// FORMULÁRIO -> WHATSAPP
+// FORMULÁRIO -> ENVIO DA MENSAGEM WHATSAPP
 // ======================================
-
 const formulario = document.querySelector("form");
 
 if (formulario) {
-
     formulario.addEventListener("submit", (e) => {
-
         e.preventDefault();
 
         const documento = document.getElementById("cpfCnpj").value;
@@ -231,7 +238,7 @@ if (formulario) {
             documentoValido = validarCNPJ(numeros);
 
         if (!documentoValido) {
-            alert("CPF ou CNPJ inválido.");
+            alert("Por favor, insira um CPF ou CNPJ válido.");
             return;
         }
 
@@ -281,7 +288,7 @@ Cidade: ${cidade}
 Estado: ${estado}
 
 📝 Observações:
-${mensagem}
+${mensagem || 'Nenhuma'}
 `;
 
         const numeroWhatsApp = "5511959507336";
