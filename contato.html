@@ -90,25 +90,67 @@
 
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-medium text-muted">Quantidade de Atrações</label>
-                                    <select id="campo-qtd-atracoes" class="form-select form-control" required>
-                                        <option value="" disabled selected>Selecione...</option>
-                                        <option value="1">1 atração</option>
-                                        <option value="2">2 atrações</option>
-                                        <option value="3">3 atrações</option>
-                                        <option value="4+">4 ou mais atrações</option>
-                                    </select>
+                                    <label class="form-label fw-medium text-muted d-block mb-3">
+                                        Quais atrações deseja contratar?
+                                    </label>
+                                
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input atracao-check" type="checkbox" value="Cabine de Fotos Premium"
+                                            id="atracao-cabine">
+                                
+                                        <label class="form-check-label" for="atracao-cabine">
+                                            Cabine de Fotos Premium
+                                        </label>
+                                    </div>
+                                
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input atracao-check" type="checkbox" value="Espelho Retrô Touch" id="atracao-espelho">
+                                
+                                        <label class="form-check-label" for="atracao-espelho">
+                                            Espelho Retrô Touch
+                                        </label>
+                                    </div>
+                                
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input atracao-check" type="checkbox" value="Plataforma 360 Video" id="atracao-360">
+                                
+                                        <label class="form-check-label" for="atracao-360">
+                                            Plataforma 360 Video
+                                        </label>
+                                    </div>
+                                
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input atracao-check" type="checkbox" value="Túnel LED Infinito" id="atracao-led">
+                                
+                                        <label class="form-check-label" for="atracao-led">
+                                            Túnel LED Infinito
+                                        </label>
+                                    </div>
+                                
+                                    <div class="invalid-feedback d-block d-none" id="erro-atracoes">
+                                        Selecione pelo menos uma atração.
+                                    </div>
                                 </div>
+
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-medium text-muted">Duração do Evento (Horas)</label>
                                     <select id="campo-duracao" class="form-select form-control" required>
                                         <option value="" disabled selected>Selecione...</option>
                                         <option value="2">2 horas</option>
+                                        <option value="3">3 horas</option>
                                         <option value="4">4 horas (Padrão)</option>
                                         <option value="5">5 horas</option>
                                         <option value="6+">Mais de 6 horas</option>
                                     </select>
                                 </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-medium text-muted">
+                                    Quantidade de Convidados
+                                </label>
+                            
+                                <input type="number" id="campo-convidados" class="form-control" min="1" placeholder="Ex: 150" required>
                             </div>
 
                             <div class="row">
