@@ -26,6 +26,41 @@ body {
     /* Compensa a Navbar Fixa uniformemente */
 }
 
+/* Animações Leves Nativas (@keyframes) */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes scaleUp {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
 /* ==========================================================================
    2. NAVBAR & MENU DE NAVEGAÇÃO
    ========================================================================== */
@@ -36,6 +71,7 @@ body {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
     height: 70px;
     z-index: 1030;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .navbar-brand {
@@ -43,19 +79,42 @@ body {
     font-weight: 700;
     color: #ffffff !important;
     letter-spacing: 2px;
+    transition: transform 0.3s ease;
+}
+
+.navbar-brand:hover {
+    transform: scale(1.02);
 }
 
 .nav-link {
     color: #ffffff !important;
     font-weight: 500;
     margin-left: 15px;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
 }
 
 .nav-link:hover,
 .nav-link.active {
     color: #ffd6d6 !important;
-    transform: scale(1.05);
+    transform: translateY(-2px);
+}
+
+/* Linha sutil decorativa ao passar o mouse nos links */
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -4px;
+    left: 0;
+    background-color: #ffd6d6;
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+    width: 100%;
 }
 
 /* Menu Lateral Mobile (Estilo Offcanvas Limpo) */
@@ -73,7 +132,7 @@ body {
         justify-content: flex-start;
         align-items: center;
         padding-top: 40px;
-        transition: right 0.4s ease-in-out;
+        transition: right 0.4s cubic-bezier(0.77, 0, 0.175, 1);
         box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
     }
 
@@ -91,10 +150,20 @@ body {
         text-align: center;
     }
 
+    .navbar-nav .nav-link::after {
+        display: none;
+        /* Remove a linha no mobile */
+    }
+
     .navbar-toggler {
         border: none !important;
         outline: none !important;
         box-shadow: none !important;
+        transition: transform 0.3s ease;
+    }
+
+    .navbar-toggler:active {
+        transform: scale(0.9);
     }
 }
 
@@ -113,6 +182,11 @@ body {
     text-align: center;
 }
 
+/* Entrada animada dos textos do Banner */
+.hero .container {
+    animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
 .hero h1 {
     font-size: 64px;
     font-weight: 700;
@@ -128,7 +202,7 @@ body {
     text-shadow: 1px 2px 5px rgba(0, 0, 0, 0.5);
 }
 
-/* Botão Customizado para substituir o hack do btn-warning */
+/* Botão Customizado Premium */
 .btn-premium-light {
     background-color: #ffffff !important;
     color: #790404 !important;
@@ -136,7 +210,7 @@ body {
     font-weight: 600;
     padding: 14px 35px;
     border-radius: 50px;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
@@ -144,7 +218,11 @@ body {
     background-color: #790404 !important;
     color: #ffffff !important;
     transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(121, 4, 4, 0.4);
+    box-shadow: 0 8px 25px rgba(121, 4, 4, 0.5);
+}
+
+.btn-premium-light:active {
+    transform: translateY(-1px);
 }
 
 /* ==========================================================================
@@ -154,12 +232,11 @@ section h2 {
     font-size: 38px;
     font-weight: 700;
     color: #790404;
-    /* Ajustado para o mesmo tom de vermelho luxo da marca */
     position: relative;
     margin-bottom: 50px;
 }
 
-/* Linha decorativa abaixo dos títulos (Desativada onde não fizer sentido) */
+/* Linha decorativa abaixo dos títulos com micro-animação de largura */
 section h2::after {
     content: '';
     width: 80px;
@@ -169,6 +246,12 @@ section h2::after {
     bottom: -15px;
     left: 50%;
     transform: translateX(-50%);
+    transition: width 0.4s ease;
+}
+
+section:hover h2::after {
+    width: 120px;
+    /* Expande levemente quando o usuário interage com a seção */
 }
 
 /* Desativação explícita da linha decorativa em seções específicas */
@@ -193,6 +276,12 @@ section h2.fw-bold.mb-4::after {
     align-items: center;
     justify-content: center;
     box-shadow: 0 4px 12px rgba(121, 4, 4, 0.25);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.col-md-4:hover .passo-numero {
+    transform: scale(1.1) rotate(10deg);
+    /* Efeito divertido e leve ao passar o mouse */
 }
 
 /* ==========================================================================
@@ -204,17 +293,23 @@ section h2.fw-bold.mb-4::after {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06) !important;
     overflow: hidden;
     background-color: #ffffff;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .card-servico:hover {
     transform: translateY(-8px);
-    box-shadow: 0 16px 32px rgba(121, 4, 4, 0.15) !important;
+    box-shadow: 0 20px 38px rgba(121, 4, 4, 0.18) !important;
 }
 
 .card-servico .card-img-top {
     height: 230px;
     object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-servico:hover .card-img-top {
+    transform: scale(1.04);
+    /* Zoom suave na imagem interna do card */
 }
 
 .card-servico .card-title {
@@ -237,12 +332,13 @@ section h2.fw-bold.mb-4::after {
     padding: 10px 20px;
     font-weight: 600;
     font-size: 0.95rem;
-    transition: background-color 0.2s ease;
+    transition: all 0.3s ease;
 }
 
 .card-servico .btn-red-pill:hover {
     background-color: #520202;
     color: #ffffff;
+    transform: scale(1.03);
 }
 
 /* ==========================================================================
@@ -262,13 +358,14 @@ section h2.fw-bold.mb-4::after {
 
 #galeria img {
     border-radius: 12px;
-    transition: transform 0.3s ease;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
     cursor: pointer;
 }
 
 #galeria img:hover {
-    transform: scale(1.03);
+    transform: scale(1.04) translateY(-3px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
 }
 
 /* ==========================================================================
@@ -277,6 +374,7 @@ section h2.fw-bold.mb-4::after {
 .contato-box {
     border-radius: 20px;
     overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
 .lado-form {
@@ -302,12 +400,14 @@ section h2.fw-bold.mb-4::after {
     border-radius: 10px;
     border: 2px solid #ddd;
     margin-bottom: 20px;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .form-control:focus {
     border-color: #790404;
-    box-shadow: 0 0 10px rgba(121, 4, 4, 0.15);
+    box-shadow: 0 0 12px rgba(121, 4, 4, 0.2);
+    transform: translateX(4px);
+    /* Deslocamento suave indicando foco ativo */
 }
 
 .lado-form .form-control {
@@ -325,14 +425,14 @@ section h2.fw-bold.mb-4::after {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.92);
+    background-color: rgba(0, 0, 0, 0.94);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1050;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.3s ease-in-out;
+    transition: opacity 0.4s ease-in-out;
 }
 
 .lightbox-overlay.active {
@@ -346,12 +446,14 @@ section h2.fw-bold.mb-4::after {
     border: 3px solid #ffffff;
     border-radius: 6px;
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
-    transform: scale(0.95);
-    transition: transform 0.3s ease-in-out;
+    transform: scale(0.93);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    /* Efeito "elastic" elegante ao abrir */
 }
 
 .lightbox-overlay.active .lightbox-img {
     transform: scale(1);
+    animation: scaleUp 0.4s ease-in-out forwards;
 }
 
 .lightbox-close {
@@ -362,12 +464,13 @@ section h2.fw-bold.mb-4::after {
     font-size: 45px;
     font-weight: 300;
     cursor: pointer;
-    transition: color 0.2s;
+    transition: all 0.2s ease;
     user-select: none;
 }
 
 .lightbox-close:hover {
     color: #ffd6d6;
+    transform: scale(1.1) rotate(90deg);
 }
 
 /* ==========================================================================
