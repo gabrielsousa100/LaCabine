@@ -5,7 +5,6 @@ const botoes = document.querySelectorAll(".btn-red-pill");
 
 botoes.forEach(botao => {
     botao.addEventListener("click", (e) => {
-        // Aplica o comportamento apenas se o botão NÃO for o do formulário principal
         if (e.target.closest('form')) return;
 
         e.preventDefault();
@@ -69,14 +68,15 @@ if (telInput) {
 }
 
 // ======================================
-// MÁSCARA CPF / CNPJ
+// MÁSCARA + CONSULTA INSTANTÂNEA DE CPF/CNPJ
 // ======================================
-const cpfCnpjInput = document.getElementById("campo-documento");
+const documentoInput = document.getElementById("campo-documento");
 
-if (cpfCnpjInput) {
-    cpfCnpjInput.addEventListener("input", () => {
-        let valor = cpfCnpjInput.value.replace(/\D/g, "");
+if (documentoInput) {
+    documentoInput.addEventListener("input", async (e) => {
+        let valor = documentoInput.value.replace(/\D/g, "");
 
+        // Aplica a máscara visual em tempo de digitação
         if (valor.length <= 11) {
             valor = valor.replace(/(\d{3})(\d)/, "$1.$2");
             valor = valor.replace(/(\d{3})(\d)/, "$1.$2");
@@ -87,140 +87,146 @@ if (cpfCnpjInput) {
             valor = valor.replace(/\.(\d{3})(\d)/, ".$1/$2");
             valor = valor.replace(/(\d{4})(\d)/, "$1-$2");
         }
+        documentoInput.value = valor;
 
-        cpfCnpjInput.value = valor;
+        const numerosLimpos = valor.replace(/\D/g, "");
+
+        // Validação Instantânea de CPF (Local)
+        if (numerosLimpos.length === 11) {
+            if (validarCPF(numerosLimpos)) {
+                documentoInput.classList.remove("is-invalid");
+                documentoInput.classList.add("is-valid");
+            } else {
+                documentoInput.classList.remove("is-valid");
+                documentoInput.classList.add("is-invalid");
+            }
+        } 
+        // Validação + Consulta Instantânea de CNPJ (Via API)
+        else if (numerosLimpos.length === 14) {
+            // Verifica primeiro se a estrutura matemática do CNPJ faz sentido
+            if (!validarCNPJ(numerosLimpos)) {
+                documentoInput.classList.remove("is-valid");
+                documentoInput.classList.add("is-invalid");
+                return;
+            }
+
+            try {
+                // Consulta a base da Receita Federal via BrasilAPI
+                const resposta = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${numerosLimpos}`);
+                
+                if (resposta.status === 200) {
+                    const dadosEmpresa = await resposta.json();
+                    documentoInput.classList.remove("is-invalid");
+                    documentoInput.classList.add("is-valid");
+
+                    // Preenche o campo de nome automaticamente com a Razão Social da Empresa
+                    const campoNome = document.getElementById("campo-nome");
+                    if (campoNome && dadosEmpresa.razao_social) {
+                        campoNome.value = dadosEmpresa.razao_social;
+                    }
+                } else {
+                    // CNPJ matematicamente correto, mas inexistente/inválido na Receita
+                    documentoInput.classList.remove("is-valid");
+                    documentoInput.classList.add("is-invalid");
+                }
+            } catch (erro) {
+                console.error("Erro ao consultar API de CNPJ:", erro);
+            }
+        } else {
+            // Se o usuário estiver no meio da digitação, limpa as classes de validação
+            documentoInput.classList.remove("is-valid", "is-invalid");
+        }
     });
 }
 
 // ======================================
-// FUNÇÃO VALIDAR CPF
+// FUNÇÕES MATEMÁTICAS DE VALIDAÇÃO (AUXILIARES)
 // ======================================
 function validarCPF(cpf) {
     cpf = cpf.replace(/\D/g, '');
-
-    if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf))
-        return false;
-
+    if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
     let soma = 0;
-
-    for (let i = 0; i < 9; i++)
-        soma += parseInt(cpf.charAt(i)) * (10 - i);
-
+    for (let i = 0; i < 9; i++) soma += parseInt(cpf.charAt(i)) * (10 - i);
     let resto = (soma * 10) % 11;
-
-    if (resto === 10 || resto === 11)
-        resto = 0;
-
-    if (resto !== parseInt(cpf.charAt(9)))
-        return false;
-
+    if (resto === 10 || resto === 11) resto = 0;
+    if (resto !== parseInt(cpf.charAt(9))) return false;
     soma = 0;
-
-    for (let i = 0; i < 10; i++)
-        soma += parseInt(cpf.charAt(i)) * (11 - i);
-
+    for (let i = 0; i < 10; i++) soma += parseInt(cpf.charAt(i)) * (11 - i);
     resto = (soma * 10) % 11;
-
-    if (resto === 10 || resto === 11)
-        resto = 0;
-
+    if (resto === 10 || resto === 11) resto = 0;
     return resto === parseInt(cpf.charAt(10));
 }
 
-// ======================================
-// FUNÇÃO VALIDAR CNPJ
-// ======================================
 function validarCNPJ(cnpj) {
     cnpj = cnpj.replace(/\D/g, '');
-
-    if (cnpj.length !== 14)
-        return false;
-
-    if (/^(\d)\1+$/.test(cnpj))
-        return false;
-
+    if (cnpj.length !== 14 || /^(\d)\1+$/.test(cnpj)) return false;
     let tamanho = cnpj.length - 2;
     let numeros = cnpj.substring(0, tamanho);
     let digitos = cnpj.substring(tamanho);
-
     let soma = 0;
     let pos = tamanho - 7;
-
     for (let i = tamanho; i >= 1; i--) {
         soma += numeros.charAt(tamanho - i) * pos--;
-        if (pos < 2)
-            pos = 9;
+        if (pos < 2) pos = 9;
     }
-
     let resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
-
-    if (resultado != digitos.charAt(0))
-        return false;
-
+    if (resultado != digitos.charAt(0)) return false;
     tamanho++;
     numeros = cnpj.substring(0, tamanho);
-
     soma = 0;
     pos = tamanho - 7;
-
     for (let i = tamanho; i >= 1; i--) {
         soma += numeros.charAt(tamanho - i) * pos--;
-        if (pos < 2)
-            pos = 9;
+        if (pos < 2) pos = 9;
     }
-
     resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
-
     return resultado == digitos.charAt(1);
 }
 
 // ======================================
-// CONSULTA VIA CEP
+// CONSULTA VIA CEP (INSTANTÂNEA AO DIGITAR O 8º DÍGITO)
 // ======================================
 const cepInput = document.getElementById("campo-cep");
 
 if (cepInput) {
-    cepInput.addEventListener("input", () => {
-        let cep = cepInput.value.replace(/\D/g, "");
+    cepInput.addEventListener("input", async (e) => {
+        let cep = e.target.value.replace(/\D/g, "");
         cep = cep.replace(/^(\d{5})(\d)/, "$1-$2");
         cepInput.value = cep;
-    });
 
-    cepInput.addEventListener("blur", async () => {
-        const cep = cepInput.value.replace(/\D/g, "");
+        const cepLimpo = cep.replace(/\D/g, "");
         const campoEndereco = document.getElementById("campo-endereco");
-        const divFeedback = cepInput.nextElementSibling; // Pega o .invalid-feedback
 
-        if (cep.length !== 8) {
-            cepInput.classList.add("is-invalid");
-            return;
-        }
+        if (cepLimpo.length === 8) {
+            try {
+                const resposta = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`);
+                const dados = await resposta.json();
 
-        try {
-            const resposta = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-            const dados = await resposta.json();
+                if (dados.erro) {
+                    cepInput.classList.remove("is-valid");
+                    cepInput.classList.add("is-invalid");
+                    if (campoEndereco) campoEndereco.value = "";
+                    return;
+                }
 
-            if (dados.erro) {
-                cepInput.classList.add("is-invalid");
-                if (campoEndereco) campoEndereco.value = "";
-                return;
-            }
-
-            cepInput.classList.remove("is-invalid");
-            
-            // Como no novo HTML o endereço é um campo só, concatenamos as informações de forma limpa
-            if (campoEndereco) {
-                let enderecoCompleto = "";
-                if (dados.logradouro) enderecoCompleto += `${dados.logradouro}, `;
-                if (dados.bairro) enderecoCompleto += `${dados.bairro}, `;
-                if (dados.localidade) enderecoCompleto += `${dados.localidade}`;
-                if (dados.uf) enderecoCompleto += ` - ${dados.uf}`;
+                cepInput.classList.remove("is-invalid");
+                cepInput.classList.add("is-valid");
                 
-                campoEndereco.value = enderecoCompleto;
+                if (campoEndereco) {
+                    let enderecoCompleto = "";
+                    if (dados.logradouro) enderecoCompleto += `${dados.logradouro}, `;
+                    if (dados.bairro) enderecoCompleto += `${dados.bairro}, `;
+                    if (dados.localidade) enderecoCompleto += `${dados.localidade}`;
+                    if (dados.uf) enderecoCompleto += ` - ${dados.uf}`;
+                    
+                    campoEndereco.value = enderecoCompleto;
+                }
+            } catch {
+                cepInput.classList.remove("is-valid");
+                cepInput.classList.add("is-invalid");
             }
-
-        } catch {
-            cepInput.classList.add("is-invalid");
+        } else {
+            cepInput.classList.remove("is-valid", "is-invalid");
         }
     });
 }
@@ -234,7 +240,7 @@ if (formulario) {
     formulario.addEventListener("submit", (e) => {
         e.preventDefault();
 
-        // 1. Validação de CPF/CNPJ
+        // 1. Validação final de segurança do CPF/CNPJ
         const documento = document.getElementById("campo-documento").value;
         const numerosDocumento = documento.replace(/\D/g, "");
         let documentoValido = false;
@@ -250,11 +256,9 @@ if (formulario) {
             inputDoc.classList.add("is-invalid");
             alert("Por favor, insira um CPF ou CNPJ válido.");
             return;
-        } else {
-            inputDoc.classList.remove("is-invalid");
         }
 
-        // 2. Validação de Checkboxes (Atrações)
+        // 2. Validação das Atrações (Checkboxes)
         const checkboxesMarcados = document.querySelectorAll(".atracao-check:checked");
         const erroAtracoes = document.getElementById("erro-atracoes");
 
@@ -266,7 +270,6 @@ if (formulario) {
             if (erroAtracoes) erroAtracoes.classList.add("d-none");
         }
 
-        // Mapeia os valores selecionados para uma string limpa separada por vírgulas
         const listaAtracoes = Array.from(checkboxesMarcados).map(cb => cb.value).join(", ");
 
         // 3. Validação de Data Futura e Antecedência Mínima
@@ -286,7 +289,7 @@ if (formulario) {
             return;
         }
 
-        // 4. Captura dos demais valores atualizados do HTML
+        // 4. Captura dos valores para o texto final
         const nome = document.getElementById("campo-nome").value;
         const email = document.getElementById("campo-email").value;
         const telefone = document.getElementById("campo-whatsapp").value;
@@ -324,7 +327,6 @@ ${mensagemAdicional || 'Nenhuma observação informada.'}
 
         const numeroWhatsApp = "5511959507336";
 
-        // 6. Disparo da janela externa
         window.open(
             `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(texto)}`,
             "_blank"
