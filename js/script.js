@@ -406,11 +406,11 @@ if (formulario) {
         const enderecoLocal = document.getElementById("campo-endereco").value;
         const mensagemAdicional = document.getElementById("campo-mensagem").value;
 
-        // ----------------------------------------------------
-        // ETAPA 3: INTEGRAÇÃO FIREBASE E REDIRECIONAMENTO
+       // ----------------------------------------------------
+        // ETAPA 3: INTEGRAÇÃO FIREBASE, EMAILJS E REDIRECIONAMENTO
         // ----------------------------------------------------
         try {
-            // 3.1 - Inserção no banco com campos administrativos (Sintaxe ES6 abreviada para chaves e valores iguais)
+            // 3.1 - Inserção no banco
             const docRef = await addDoc(collection(db, "solicitacoes_contrato"), {
                 nome, email, telefone, documento, dataEvento, tipoEvento, horasEvento,
                 convidados: parseInt(convidados) || 0,
@@ -420,10 +420,27 @@ if (formulario) {
                 dataCriacao: new Date()
             });
 
-            // 3.2 - Captura do ID único gerado
             const idSolicitacao = docRef.id;
 
-            // 3.3 - Montagem do Template String para o WhatsApp
+            // 3.2 - Disparo do E-mail (EmailJS)
+            // Lembre-se: os campos dentro de templateParams devem ser 
+            // idênticos aos criados no seu Template lá no site do EmailJS
+            const templateParams = {
+                id_solicitacao: idSolicitacao,
+                nome_cliente: nome,
+                telefone_cliente: telefone,
+                email_cliente: email,
+                data_evento: dataEvento.split('-').reverse().join('/'),
+                tipo_evento: tipoEvento,
+                atracoes: listaAtracoes
+            };
+
+            // Substitua pelos IDs que você pegou no painel do EmailJS
+            emailjs.send("SEU_SERVICE_ID", "SEU_TEMPLATE_ID", templateParams)
+                .then(() => console.log("E-mail de aviso enviado ao dono!"))
+                .catch((err) => console.error("Erro ao enviar e-mail:", err));
+
+            // 3.3 - Montagem da mensagem para o WhatsApp
             const texto = `
 *SOLICITAÇÃO DE ORÇAMENTO - LACABINE*
 *ID de Atendimento:* ${idSolicitacao}
@@ -457,8 +474,8 @@ ${mensagemAdicional || 'Nenhuma observação informada.'}
             formulario.reset();
 
         } catch (erro) {
-            console.error("Erro Crítico - Falha na gravação do Firebase:", erro);
-            alert("Houve um erro técnico no processamento. Por favor, tente nos chamar diretamente no WhatsApp usando o botão flutuante.");
+            console.error("Erro Crítico:", erro);
+            alert("Houve um erro técnico. Por favor, tente nos chamar diretamente pelo WhatsApp.");
         }
     });
 }
