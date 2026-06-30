@@ -264,85 +264,12 @@
     
             <div class="row justify-content-center">
                 <div class="col-lg-8">
-                    <!-- Carrossel de Feedback -->
-                    <div id="carouselFeedback" class="carousel slide" data-bs-ride="carousel" data-bs-interval="6000">
+                    <div id="carouselFeedback" class="carousel slide">
     
-                        <!-- Indicadores (Pontinhos de navegação embaixo) -->
-                        <div class="carousel-indicators position-relative mt-4">
-                            <button type="button" data-bs-target="#carouselFeedback" data-bs-slide-to="0"
-                                class="active bg-dark" aria-current="true" aria-label="Slide 1"></button>
-                            <button type="button" data-bs-target="#carouselFeedback" data-bs-slide-to="1" class="bg-dark"
-                                aria-label="Slide 2"></button>
-                            <button type="button" data-bs-target="#carouselFeedback" data-bs-slide-to="2" class="bg-dark"
-                                aria-label="Slide 3"></button>
-                        </div>
+                        <div class="carousel-indicators position-relative mt-4" id="carousel-indicators-container"></div>
     
-                        <!-- Conteúdo dos Slides -->
-                        <div class="carousel-inner text-center px-md-5">
+                        <div class="carousel-inner text-center px-md-5" id="carousel-inner-container"></div>
     
-                            <!-- Depoimento 1 -->
-                            <div class="carousel-item active">
-                                <div class="feedback-card p-4 bg-white rounded shadow-sm position-relative">
-                                    <i
-                                        class="bi bi-quote text-danger display-1 opacity-10 position-absolute top-0 start-50 translate-middle-x mt-2"></i>
-                                    <div class="text-warning mb-3">
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                    </div>
-                                    <p class="fs-5 italic text-dark mb-4">"A plataforma 360 foi a grande atração do meu
-                                        casamento! Os convidados simplesmente piraram, a fila não andava de tanta gente
-                                        querendo gravar. O atendimento da equipe foi impecável do início ao fim."</p>
-                                    <h6 class="fw-bold mb-0">Mariana & Roberto</h6>
-                                    <small class="text-muted">Casamento Premium — São Paulo, SP</small>
-                                </div>
-                            </div>
-    
-                            <!-- Depoimento 2 -->
-                            <div class="carousel-item">
-                                <div class="feedback-card p-4 bg-white rounded shadow-sm position-relative">
-                                    <i
-                                        class="bi bi-quote text-danger display-1 opacity-10 position-absolute top-0 start-50 translate-middle-x mt-2"></i>
-                                    <div class="text-warning mb-3">
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                    </div>
-                                    <p class="fs-5 italic text-dark mb-4">"Contratamos o Espelho Mágico para a festa de 15
-                                        anos da minha filha e foi um sucesso absoluto. As fotos reveladas na hora saem com
-                                        uma qualidade incrível e a moldura personalizada ficou linda."</p>
-                                    <h6 class="fw-bold mb-0">Carla Souvenier</h6>
-                                    <small class="text-muted">Festa de 15 Anos — Campinas, SP</small>
-                                </div>
-                            </div>
-    
-                            <!-- Depoimento 3 -->
-                            <div class="carousel-item">
-                                <div class="feedback-card p-4 bg-white rounded shadow-sm position-relative">
-                                    <i
-                                        class="bi bi-quote text-danger display-1 opacity-10 position-absolute top-0 start-50 translate-middle-x mt-2"></i>
-                                    <div class="text-warning mb-3">
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                        <i class="bi bi-star-fill"></i>
-                                    </div>
-                                    <p class="fs-5 italic text-dark mb-4">"Excelente pontualidade e profissionalismo.
-                                        Levamos a cabine customizada para a convenção da nossa empresa e a ativação de marca
-                                        superou as expectativas. Com certeza faremos novos eventos corporativos juntos."</p>
-                                    <h6 class="fw-bold mb-0">Thiago Mendes</h6>
-                                    <small class="text-muted">Evento Corporativo (TechCorp) — Santos, SP</small>
-                                </div>
-                            </div>
-    
-                        </div>
-    
-                        <!-- Botões de Setas Laterais (Apenas visíveis em telas maiores) -->
                         <button class="carousel-control-prev d-none d-md-flex text-dark" type="button"
                             data-bs-target="#carouselFeedback" data-bs-slide="prev">
                             <i class="bi bi-chevron-left fs-3 text-dark"></i>
@@ -355,6 +282,48 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <section class="py-4 bg-dark text-white border-top border-secondary">
+        <div class="container" style="max-width: 600px;">
+            <div class="text-center mb-4">
+                <h5 class="fw-bold">Deixe seu Depoimento</h5>
+                <p class="text-muted small">Sua opinião é muito importante para nós!</p>
+            </div>
+    
+            <form id="form-novo-depoimento">
+                <div class="row g-2">
+                    <div class="col-md-6">
+                        <input type="text" id="depoimento-nome"
+                            class="form-control form-control-sm bg-secondary text-white border-0"
+                            placeholder="Seu Nome (Ex: Ana & Carlos)" required>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" id="depoimento-evento"
+                            class="form-control form-control-sm bg-secondary text-white border-0"
+                            placeholder="Seu Evento (Ex: Casamento — SP)" required>
+                    </div>
+                    <div class="col-12">
+                        <select id="depoimento-estrelas" class="form-select form-select-sm bg-secondary text-white border-0"
+                            required>
+                            <option value="5" selected>⭐⭐⭐⭐⭐ (5 Estrelas)</option>
+                            <option value="4">⭐⭐⭐⭐ (4 Estrelas)</option>
+                            <option value="3">⭐⭐⭐ (3 Estrelas)</option>
+                            <option value="2">⭐⭐ (2 Estrelas)</option>
+                            <option value="1">⭐ (1 Estrela)</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <textarea id="depoimento-texto"
+                            class="form-control form-control-sm bg-secondary text-white border-0" rows="3"
+                            placeholder="Conte como foi sua experiência com a LaCabine..." required></textarea>
+                    </div>
+                    <div class="col-12 text-center mt-3">
+                        <button type="submit" class="btn btn-danger btn-sm px-4">Enviar Depoimento</button>
+                    </div>
+                </div>
+            </form>
         </div>
     </section>
 
@@ -374,7 +343,7 @@
 
     <!-- Bootstrap Bundle (Inclusão de scripts) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="./js/script.js"></script>
+    <script type="module" src="./js/script.js"></script>
 </body>
 
 </html>

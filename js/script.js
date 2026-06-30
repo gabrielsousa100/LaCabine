@@ -1,3 +1,5 @@
+import { db, collection, addDoc, getDocs, query, where, orderBy } from './firebase-config.js';
+
 // ======================================
 // CONTROLE DINÂMICO DOS MODAIS DE SERVIÇOS
 // ======================================
@@ -337,23 +339,23 @@ if (cepInput) {
 }
 
 // ======================================
-// FORMULÁRIO -> ENVIO DA MENSAGEM WHATSAPP
+// FORMULÁRIO -> ENVIO DA MENSAGEM WHATSAPP E FIREBASE
 // ======================================
 const formulario = document.getElementById("form-orcamento");
 
 if (formulario) {
-    formulario.addEventListener("submit", (e) => {
+    formulario.addEventListener("submit", async (e) => {
         e.preventDefault();
 
+        // ----------------------------------------------------
+        // ETAPA 1: VALIDAÇÕES DE FRONTEND
+        // ----------------------------------------------------
+        
+        // 1.1 - Validação de Documento (Ternário para simplificar a lógica)
         const documento = document.getElementById("campo-documento").value;
         const numerosDocumento = documento.replace(/\D/g, "");
-        let documentoValido = false;
-
-        if (numerosDocumento.length === 11) {
-            documentoValido = validarCPF(numerosDocumento);
-        } else if (numerosDocumento.length === 14) {
-            documentoValido = validarCNPJ(numerosDocumento);
-        }
+        let documentoValido = numerosDocumento.length === 11 ? validarCPF(numerosDocumento) : 
+                              numerosDocumento.length === 14 ? validarCNPJ(numerosDocumento) : false;
 
         const inputDoc = document.getElementById("campo-documento");
         if (!documentoValido) {
@@ -362,9 +364,9 @@ if (formulario) {
             return;
         }
 
+        // 1.2 - Validação de Atrações
         const checkboxesMarcados = document.querySelectorAll(".atracao-check:checked");
         const erroAtracoes = document.getElementById("erro-atracoes");
-
         if (checkboxesMarcados.length === 0) {
             if (erroAtracoes) erroAtracoes.classList.remove("d-none");
             alert("Selecione pelo menos uma atração.");
@@ -372,9 +374,9 @@ if (formulario) {
         } else {
             if (erroAtracoes) erroAtracoes.classList.add("d-none");
         }
-
         const listaAtracoes = Array.from(checkboxesMarcados).map(cb => cb.value).join(", ");
 
+        // 1.3 - Validação de Data (Mínimo de 7 dias)
         const dataEvento = document.getElementById("campo-data").value;
         const hoje = new Date();
         hoje.setHours(0, 0, 0, 0);
@@ -384,13 +386,14 @@ if (formulario) {
             alert("Selecione uma data futura.");
             return;
         }
-
-        const diferencaDias = (dataSelecionada - hoje) / (1000 * 60 * 60 * 24);
-        if (diferencaDias < 7) {
+        if ((dataSelecionada - hoje) / (1000 * 60 * 60 * 24) < 7) {
             alert("Solicitações devem ser feitas com pelo menos 7 dias de antecedência.");
             return;
         }
 
+        // ----------------------------------------------------
+        // ETAPA 2: EXTRAÇÃO DOS DADOS RESTANTES
+        // ----------------------------------------------------
         const nome = document.getElementById("campo-nome").value;
         const email = document.getElementById("campo-email").value;
         const telefone = document.getElementById("campo-whatsapp").value;
@@ -403,33 +406,59 @@ if (formulario) {
         const enderecoLocal = document.getElementById("campo-endereco").value;
         const mensagemAdicional = document.getElementById("campo-mensagem").value;
 
-        const texto = `
+        // ----------------------------------------------------
+        // ETAPA 3: INTEGRAÇÃO FIREBASE E REDIRECIONAMENTO
+        // ----------------------------------------------------
+        try {
+            // 3.1 - Inserção no banco com campos administrativos (Sintaxe ES6 abreviada para chaves e valores iguais)
+            const docRef = await addDoc(collection(db, "solicitacoes_contrato"), {
+                nome, email, telefone, documento, dataEvento, tipoEvento, horasEvento,
+                convidados: parseInt(convidados) || 0,
+                listaAtracoes, cep, enderecoLocal, mensagemAdicional,
+                status: "Pendente",
+                prioridade: "Normal",
+                dataCriacao: new Date()
+            });
+
+            // 3.2 - Captura do ID único gerado
+            const idSolicitacao = docRef.id;
+
+            // 3.3 - Montagem do Template String para o WhatsApp
+            const texto = `
 *SOLICITAÇÃO DE ORÇAMENTO - LACABINE*
+*ID de Atendimento:* ${idSolicitacao}
 
-👤 Nome: ${nome}
-📧 E-mail: ${email}
-📱 Telefone: ${telefone}
-🪪 CPF/CNPJ: ${documento}
+Nome: ${nome}
+E-mail: ${email}
+Telefone: ${telefone}
+CPF/CNPJ: ${documento}
 
-📅 Data do Evento: ${dataEvento.split('-').reverse().join('/')}
-🎉 Tipo de Evento: ${tipoEvento}
-👥 Qtd. Convidados: ${convidados}
-⏱ Duração Contratada: ${horasEvento}
-⭐ Atrações Escolhidas: ${listaAtracoes}
+Data do Evento: ${dataEvento.split('-').reverse().join('/')}
+Tipo de Evento: ${tipoEvento}
+Qtd. Convidados: ${convidados}
+Duração Contratada: ${horasEvento}
+Atrações Escolhidas: ${listaAtracoes}
 
-📍 Local de Realização:
+Local de Realização:
 CEP: ${cep}
 Endereço: ${enderecoLocal}
 
-📝 Observações / Detalhes:
+Observações:
 ${mensagemAdicional || 'Nenhuma observação informada.'}
 `;
 
-        const numeroWhatsApp = "5511959507336";
+            // 3.4 - Feedback ao usuário e redirecionamento
+            alert(`Solicitação registrada com sucesso!\n\nGuarde o seu ID de atendimento: ${idSolicitacao}\n\nVocê será redirecionado para o nosso WhatsApp para darmos andamento.`);
+            
+            const numeroWhatsApp = "5511959507336";
+            window.open(`https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(texto)}`, "_blank");
+            
+            // 3.5 - Limpeza de tela
+            formulario.reset();
 
-        window.open(
-            `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(texto)}`,
-            "_blank"
-        );
+        } catch (erro) {
+            console.error("Erro Crítico - Falha na gravação do Firebase:", erro);
+            alert("Houve um erro técnico no processamento. Por favor, tente nos chamar diretamente no WhatsApp usando o botão flutuante.");
+        }
     });
 }
